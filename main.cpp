@@ -5,6 +5,7 @@
 #include "functions/functions.h"
 #include "functions/bigint.h"
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <cstdlib>
 

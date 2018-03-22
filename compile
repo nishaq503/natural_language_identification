@@ -15,6 +15,3 @@ usage () {
 
 # Compile:
 $compiler -std=c++11 -g main.cpp functions/functions.cpp functions/bigint.cpp -o $ouput
-
-# Running:
-./$ouput data/training_languages/* data/testing_languages/english
