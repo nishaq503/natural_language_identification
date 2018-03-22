@@ -2,10 +2,10 @@
 
 # Variables:
 compiler=g++
-ouput=main.o
+output=main.o
 
 # Clean up the current repo:
-rm -f ./$ouput
+rm -f ./$output
 
 # Functions:
 usage () {
@@ -14,4 +14,9 @@ usage () {
 }
 
 # Compile:
-$compiler -std=c++11 -g main.cpp functions/functions.cpp functions/bigint.cpp -o $ouput
+$compiler -std=c++11 -g main.cpp functions/functions.cpp functions/bigint.cpp -o $output
+
+# Running:
+./$output data/training_languages/* data/testing_languages/*
+
+#

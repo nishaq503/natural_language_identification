@@ -15,18 +15,17 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    std::vector<std::string> language_names;
+    std::vector<std::string> training_languages, test_languages;
 
-    for (int i = 1; i < argc; ++i) {
-        language_names.push_back(std::string(argv[i]));
-    }
-
-    std::string test_language = language_names.back();
-    language_names.pop_back();
-
-    std::string best_match = detect_language(test_language, language_names);
-
-    std::cout << best_match << std::endl;
-
+    for (int i = 1; i < 10; ++i)
+        training_languages.push_back(std::string(argv[i]));
+    
+    for (int i = 10; i < argc; ++i)
+        test_languages.push_back(std::string(argv[i]));
+    
+    for (size_t i = 0; i < test_languages.size(); ++i)
+        std::cout << detect_language(test_languages[i], training_languages) << std::endl;
+        std::cout << std::endl;
+    
     return 0;
 }
