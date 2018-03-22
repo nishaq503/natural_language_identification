@@ -1,1 +1,1 @@
-# Natural Language Detection
+Language
