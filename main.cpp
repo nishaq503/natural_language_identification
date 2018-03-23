@@ -2,7 +2,8 @@
  * Started by Najib 3/21/18
  **/
 
-#include "functions/functions.h"
+#include "functions/slow.h"
+//#include "functions/functions.h"
 #include "functions/bigint.h"
 #include <iostream>
 #include <fstream>

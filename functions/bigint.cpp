@@ -275,7 +275,7 @@ bigint r_multiply(bigint &a, bigint &b) {
 bigint bigint::fast_multiply(const bigint &that) const {
     if (*this == 0 || that == 0) return 0;
     bigint a = *this, b = that;
-    return r_multiply(a, b);
+    return a < b ? r_multiply(b, a) : r_multiply(a, b);
 }
 
 bigint bigint::operator*(const bigint &that) const {
@@ -303,23 +303,23 @@ bigint bigint::divide(const bigint &that) const {
     return result;
 }
 
-unsigned int r_divide_helper(bigint &a, bigint &b) {
+bigint r_divide_helper(bigint &a, bigint &b) {
     dbl(b);
     if (a < b) {
         halve(b);
         return 1;
     }
-    return 2 * r_divide_helper(a, b);
+    return bigint(2) * r_divide_helper(a, b);
 }
 
 bigint r_divide(bigint &a, bigint & b) {
-    unsigned int temp = 1;
+    bigint temp = 1;
     bigint result;
     do {
         temp = r_divide_helper(a, b);
         result += temp;
         a -= b;
-        for (unsigned int i = 1; i < temp; i *= 2) halve(b);
+        for (bigint i = 1; i < temp; i *= 2) halve(b);
     } while (temp > 1 && a != 0 && a >= b);
     return result;
 }
@@ -357,13 +357,13 @@ bigint bigint::mod(const bigint &that) const {
 }
 
 bigint r_mod(bigint &a, bigint & b) {
-    unsigned int temp = 1;
+    bigint temp = 1;
     bigint result;
     do {
         temp = r_divide_helper(a, b);
         result += temp;
         a -= b;
-        for (unsigned int i = 1; i < temp; i *= 2) halve(b);
+        for (bigint i = 1; i < temp; i *= 2) halve(b);
     } while (temp > 1 && a != 0);
     return a;
 }
