@@ -1,12 +1,12 @@
 #!/bin/bash
 
+clear
+
 # Variables:
 compiler=g++
 output=main.o
-FLAGS1="-pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization
- -Wformat=2 -Winit-self -Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept
- -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo
- -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wno-unused"
+FLAGS="-pedantic -Wall -Wextra -Wdisabled-optimization -Wmissing-include-dirs
+ -Wnoexcept -Wredundant-decls -Wswitch-default -Wundef -Werror -Wno-unused"
 
 # Halt on first error
 set -e
@@ -21,7 +21,7 @@ usage () {
 }
 
 # Compile:
-$compiler -std=c++11 -Ofast -g main.cpp functions/functions.cpp functions/bigint.cpp -o $output
+$compiler $FLAGS -std=c++11 -Ofast -g main.cpp functions/functions.cpp functions/bigint.cpp -o $output
 
 # Running:
 ./$output data/training_languages/* data/testing_languages/*
