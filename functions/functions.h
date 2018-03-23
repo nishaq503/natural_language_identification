@@ -19,7 +19,7 @@ bigint get_dot(const std::vector<unsigned int> &frequency_A, const std::vector<u
 // calculates the similarity between 2 frequency vectors using scaled division of bigints.
 double get_similarity(const bigint norm_A, const std::vector<unsigned int> &frequency_A, const std::vector<unsigned int> &frequency_B);
 
-// uses the above functions to find which language is most similar to the test_language.
-std::string detect_language(const std::string &test_language, const std::vector<std::string> &language_names);
+// uses the above functions to find the best match in training languages for each testing language.
+void detect_language(const std::vector<std::string> &training_languages, const std::vector<std::string> &testing_languages);
 
 #endif

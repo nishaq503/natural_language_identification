@@ -54,26 +54,19 @@ bigint get_dot(const std::vector<unsigned int> &frequency_A, const std::vector<u
     return dot;
 }
 
-void scale_bigint(bigint & a, unsigned int n) {
-    std::vector<vec_bin> number = a.getNumber();
-    std::reverse(number.begin(), number.end());
-
-    for (unsigned int i = 0; i < n; ++i)
-        number.push_back(0);
-    
-    std::reverse(number.begin(), number.end());
-    a = bigint(number);
-
-    return;
-}
-
 double get_similarity(const bigint norm_A, const std::vector<unsigned int> &frequency_A, const std::vector<unsigned int> &frequency_B) {
     bigint norm_B = get_dot(frequency_B, frequency_B);
     bigint dot = get_dot(frequency_A, frequency_B);
 
     bigint top = dot.fast_pow(2);
-    scale_bigint(top, 6);
 
+    std::vector<vec_bin> temp;
+    for (unsigned int i = 0; i < 6; ++i)
+        temp.push_back(0);
+    for (size_t i = 0; i < top.getNumber().size(); ++i)
+        temp.push_back(top.getNumber()[i]);
+
+    top = bigint(temp);
     bigint bottom = norm_A * norm_B;
 
     bigint sim = top / bottom;
@@ -84,23 +77,30 @@ double get_similarity(const bigint norm_A, const std::vector<unsigned int> &freq
     return sqrt(similarity);
 }
 
-std::string detect_language(const std::string &test_language, const std::vector<std::string> &language_names) {
+void detect_language(const std::vector<std::string> &training_languages, const std::vector<std::string> &testing_languages) {
     std::string best_match = "Nothing to see here!";
-    double similarity = 0.0;
 
-    std::vector<unsigned int> frequency_A = get_frequency_vector(test_language);
-    bigint norm_A = get_dot(frequency_A, frequency_A);
+    std::vector< std::vector<unsigned int> > frequency_vectors;
+    for (size_t i = 0; i < training_languages.size(); ++i)
+        frequency_vectors.push_back(get_frequency_vector(training_languages[i]));
 
-    for (size_t i = 0; i < language_names.size(); ++i) {
-        std::vector<unsigned int> frequency_B = get_frequency_vector(language_names[i]);
-        double temp = get_similarity(norm_A, frequency_A, frequency_B);
+    for (size_t i = 0; i < testing_languages.size(); ++i) {
+        double similarity = 0.0;
 
-        if (temp > similarity) {
-            similarity = temp;
-            best_match = language_names[i];
+        std::vector<unsigned int> frequency_A = get_frequency_vector(testing_languages[i]);
+        bigint norm_A = get_dot(frequency_A, frequency_A);
+
+        for (size_t j = 0; j < frequency_vectors.size(); ++j) {
+            double temp = get_similarity(norm_A, frequency_A, frequency_vectors[j]);
+
+            if (temp > similarity) {
+                similarity = temp;
+                best_match = training_languages[j];
+            }
         }
+        std::cout << testing_languages[i] << std::endl;
+        std::cout << "silimarity = " << similarity << std::endl;
+        std::cout << best_match << std::endl << std::endl;
     }
-    std::cout << test_language << std::endl;
-    std::cout << "similarity = " << similarity << std::endl;
-    return best_match;
+    return;
 }

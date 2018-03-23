@@ -23,9 +23,7 @@ int main(int argc, char *argv[]) {
     for (int i = 10; i < argc; ++i)
         test_languages.push_back(std::string(argv[i]));
     
-    for (size_t i = 0; i < test_languages.size(); ++i)
-        std::cout << detect_language(test_languages[i], training_languages) << std::endl;
-        std::cout << std::endl;
-    
+    detect_language(training_languages, test_languages);
+
     return 0;
 }
