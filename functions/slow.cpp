@@ -65,7 +65,7 @@ double get_similarity(const bigint norm_A, const std::vector<unsigned int> &freq
     std::cout << "top = " << top << std::endl << std::flush;
 
     std::vector<vec_bin> temp;
-    for (unsigned int i = 0; i < 6; ++i)
+    for (unsigned int i = 0; i < 3; ++i)
         temp.push_back(0);
     for (size_t i = 0; i < top.getNumber().size(); ++i)
         temp.push_back(top.getNumber()[i]);
@@ -80,7 +80,7 @@ double get_similarity(const bigint norm_A, const std::vector<unsigned int> &freq
     std::cout << "scaled similarity = " << sim << std::endl << std::flush;
 
     std::string num = sim.to_string();
-    double similarity = (double)std::stoi(num) / (double)1000000;
+    double similarity = (double)std::stoi(num) / (double)1000;
 
     return sqrt(similarity);
 }

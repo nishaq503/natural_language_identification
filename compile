@@ -21,7 +21,7 @@ usage () {
 }
 
 # Compile:
-$compiler $FLAGS -std=c++11 -Ofast -g main.cpp functions/slow.cpp functions/bigint.cpp -o $output
+$compiler $FLAGS -std=c++11 -Ofast -g main.cpp functions/functions.cpp functions/bigint.cpp -o $output
 
 # Running:
 time ./$output data/training_languages/* data/testing_languages/english
