@@ -1,18 +1,15 @@
 #!/bin/bash
 
-#clear
-
 # Variables:
 compiler=g++
 output=main.o
-FLAGS="-pedantic -Wall -Wextra -Wdisabled-optimization -Wmissing-include-dirs
- -Wnoexcept -Wredundant-decls -Wswitch-default -Wundef -Werror -Wno-unused"
+FLAGS="-pedantic -Wall -Wextra -Wnoexcept -Wredundant-decls -Wundef -Werror -Wfatal-errors"
 
 # Halt on first error
 set -e
 
 # Clean up the current repo:
-rm -f ./$output
+rm -f $output
 
 # Functions:
 usage () {
@@ -24,6 +21,6 @@ usage () {
 $compiler $FLAGS -std=c++11 -Ofast -g main.cpp functions/functions.cpp functions/bigint.cpp -o $output
 
 # Running:
-time ./$output data/training_languages/* data/testing_languages/english
+time ./$output data/training_languages/* data/testing_languages/*
 
 #

@@ -15,16 +15,15 @@
 bool read_next_char(std::ifstream &infile, char &ch, unsigned int &i) {
     if (!infile.get(ch)) return false;
 
-    if (ch == ' ') i = 0;
-    else if (ch >= 'a' && ch <= 'z') i = (unsigned int)(ch - 'a' + 1);
-    else if (ch >= 'A' && ch <= 'Z') i = (unsigned int)(ch - 'A' + 1);
-    else return false;
+    else if (ch >= 'a' && ch <= 'z') i = (unsigned int)(ch - 'a' + 0);
+    else if (ch >= 'A' && ch <= 'Z') i = (unsigned int)(ch - 'A' + 0);
+    else return read_next_char(infile, ch, i);
 
     return true;
 }
 
 std::vector<unsigned int> get_frequency_vector(const std::string file_name) {
-    std::vector <unsigned int> frequency(27*27*27, 0);
+    std::vector <unsigned int> frequency(26*26*26, 0);
     char c;
     unsigned int i1, i2, i3;
     
@@ -36,7 +35,7 @@ std::vector<unsigned int> get_frequency_vector(const std::string file_name) {
     }
 
     do {
-        ++frequency[27*27*i1 + 27*i2 + i3];
+        ++frequency[26*26*i1 + 26*i2 + i3];
         i1 = i2;
         i2 = i3;
     } while (read_next_char(infile, c, i3));

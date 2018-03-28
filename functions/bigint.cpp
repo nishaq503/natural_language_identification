@@ -11,9 +11,9 @@ void bigint::strip_zeros() {
     if (number.empty()) number.push_back(0);
 }
 
-/* Constructors
- * 
- * */
+/**
+ * Constructors
+ **/
 
 bigint::bigint() {
     number.clear();
@@ -117,13 +117,9 @@ bigint bigint::add(const bigint &that) const {
     // Find the size of each number.
     size_t n_this = number.size();
     size_t n_that = that.number.size();
-    size_t n = n_this;
+    size_t n = n_this > n_that ? n_this : n_that;
 
-    std::vector<vec_bin> result = number;
-    if (n_this < n_that) {
-        n = n_that;
-        for (size_t i = n_this; i < n_that; ++i) result.push_back(0);
-    }
+    std::vector<vec_bin> result;
 
     // The addition is done here.
     int carry = 0, temp = 0;
@@ -133,23 +129,21 @@ bigint bigint::add(const bigint &that) const {
         // it replaces that number with 0.
         temp = (i < n_this ? number[i] : 0) + (i < n_that ? that[i] : 0) + carry;
         // Now, save the digit, and fix the carry.
-        result[i] = temp % 10;
+        result.push_back(temp % 10);
         carry = temp / 10;
     }
     // 90 + 100 leaves a carry, add that to the back of number here.
     if (carry > 0) result.push_back(carry);
 
-    bigint ret = result;
-    return ret;
+    return bigint(result);
 }
 
 bigint bigint::operator+(const bigint &that) const {
-    bigint ret = (*this).add(that);
-    return ret;
+    return this->add(that);
 }
 
 bigint &bigint::operator+=(const bigint &that) {
-    *this = (*this).add(that);
+    *this = this->add(that);
     return *this;
 }
 
@@ -175,7 +169,7 @@ bigint bigint::subtract(const bigint &that) const {
 
     size_t num_this = number.size();
     size_t num_that = that.getNumber().size();
-    std::vector<vec_bin> result = number;
+    std::vector<vec_bin> result;
 
     // Do the actual subtraction.
     int take = 0, temp = 0;
@@ -191,20 +185,17 @@ bigint bigint::subtract(const bigint &that) const {
         } else {
             take = 0;
         }
-        result[i] = temp;
+        result.push_back(temp);
     }
-    bigint ret = result;
-    ret.strip_zeros();
-    return ret;
+    return bigint(result);
 }
 
 bigint bigint::operator-(const bigint &that) const {
-    bigint ret = (*this).subtract(that);
-    return ret;
+    return this->subtract(that);
 }
 
 bigint &bigint::operator-=(const bigint &that) {
-    *this = (*this).subtract(that);
+    *this = this->subtract(that);
     return *this;
 }
 
@@ -275,7 +266,7 @@ bigint r_multiply(bigint &a, bigint &b) {
 bigint bigint::fast_multiply(const bigint &that) const {
     if (*this == 0 || that == 0) return 0;
     bigint a = *this, b = that;
-    return a < b ? r_multiply(b, a) : r_multiply(a, b);
+    return a > b ? r_multiply(a, b) : r_multiply(b, a);
 }
 
 bigint bigint::operator*(const bigint &that) const {
@@ -309,17 +300,16 @@ bigint r_divide_helper(bigint &a, bigint &b) {
         halve(b);
         return 1;
     }
-    return bigint(2) * r_divide_helper(a, b);
+    return r_divide_helper(a, b) * 2;
 }
 
-bigint r_divide(bigint &a, bigint & b) {
-    bigint temp = 1;
-    bigint result;
+bigint r_divide(bigint &a, const bigint &that) {
+    bigint temp = 1, b = that, result;
     do {
         temp = r_divide_helper(a, b);
         result += temp;
         a -= b;
-        for (bigint i = 1; i < temp; i *= 2) halve(b);
+        b = that;
     } while (temp > 1 && a != 0 && a >= b);
     return result;
 }
@@ -329,9 +319,9 @@ bigint bigint::fast_divide(const bigint &that) const {
     else if (that == 0) throw "Cannot Divide by 0!";
     else if (*this < that) return 0;
 
-    bigint a = *this, b = that;
+    bigint a = *this;
 
-    return r_divide(a, b);
+    return r_divide(a, that);
 }
 
 bigint bigint::operator/(const bigint &that) const {
@@ -356,14 +346,13 @@ bigint bigint::mod(const bigint &that) const {
     return result;
 }
 
-bigint r_mod(bigint &a, bigint & b) {
-    bigint temp = 1;
-    bigint result;
+bigint r_mod(bigint &a, const bigint &that) {
+    bigint temp = 1, b = that, result;
     do {
         temp = r_divide_helper(a, b);
         result += temp;
         a -= b;
-        for (bigint i = 1; i < temp; i *= 2) halve(b);
+        b = that;
     } while (temp > 1 && a != 0);
     return a;
 }
@@ -373,9 +362,9 @@ bigint bigint::fast_mod(const bigint &that) const {
     else if (that == 0) throw "Cannot Divide by 0!";
     else if (*this < that) return 0;
 
-    bigint a = *this, b = that;
+    bigint a = *this;
 
-    return r_mod(a, b);
+    return r_mod(a, that);
 }
 
 bigint bigint::operator%(const bigint &that) const {
@@ -449,7 +438,7 @@ std::string bigint::scientific(unsigned int decimal_points) const {
     result += std::to_string(number.size() - 1);
     return result;
 }
-
+bigint result;
 void bigint::to_file(std::ofstream &outfile, unsigned int wrap) {
     std::string result = this->to_string();
     for (int i = 0; i < (int)result.length(); ++i) {
