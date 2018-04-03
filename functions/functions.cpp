@@ -53,7 +53,7 @@ bigint get_dot(const std::vector<unsigned int> &frequency_A, const std::vector<u
     return dot;
 }
 
-double get_similarity(const bigint norm_A, const std::vector<unsigned int> &frequency_A, const std::vector<unsigned int> &frequency_B) {
+double get_similarity(const bigint &norm_A, const std::vector<unsigned int> &frequency_A, const std::vector<unsigned int> &frequency_B) {
     bigint norm_B = get_dot(frequency_B, frequency_B);
     bigint dot = get_dot(frequency_A, frequency_B);
 
