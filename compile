@@ -23,4 +23,4 @@ $compiler $FLAGS -std=c++11 -Ofast main.cpp functions/functions.cpp functions/bi
 # Running:
 time ./$output data/training_languages/* data/testing_languages/*
 
-#
+# Done
