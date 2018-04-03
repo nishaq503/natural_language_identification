@@ -10,7 +10,7 @@
 #include <cstdlib>
 
 int main(int argc, char *argv[]) {
-    if (argc < 12) {
+    if (argc < 11) {
         std::cerr << "Need all 9 training files and at least one testing file!" << std::endl;
         exit(EXIT_FAILURE);
     }

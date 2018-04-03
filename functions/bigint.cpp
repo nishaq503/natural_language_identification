@@ -39,7 +39,8 @@ bigint::bigint(std::string str) {
     number.clear();
 
     // Get each digit, starting from the end, and append to number.
-    for (int i = str.length(); i > 0; --i) number.push_back((vec_bin)(str[i - 1]) - '0');
+    for (int i = str.length(); i > 0; --i)
+        number.push_back((vec_bin)(str[i - 1]) - '0');
     
     this->strip_zeros();
 }
@@ -47,15 +48,17 @@ bigint::bigint(std::string str) {
 bigint::bigint(std::ifstream &infile) {
     if (!infile.fail()) {
         std::string line, result;
-        while (getline(infile, line)) result += line;
+        while (getline(infile, line))
+            result += line;
+
         *this = result;
     }
-    else std::cerr << "Could not open the file!" << std::endl;
+    else throw "Could not open the file!";
 }
 
 bigint::bigint(const bigint &that) {
     number.clear();
-    number = that.getNumber();
+    *this = that;
 }
 
 
@@ -148,7 +151,7 @@ bigint &bigint::operator+=(const bigint &that) {
 }
 
 bigint &bigint::operator++() {
-    return *this += bigint(1);
+    return *this += 1;
 }
 
 bigint bigint::operator++(int) {
@@ -200,7 +203,7 @@ bigint &bigint::operator-=(const bigint &that) {
 }
 
 bigint &bigint::operator--() {
-    return *this -= bigint(1);
+    return *this -= 1;
 }
 
 bigint bigint::operator--(int) {
@@ -223,6 +226,7 @@ void dbl(bigint &a) {
     }
     if (carry) number.push_back(carry);
     a = bigint(number);
+    return;
 }
 
 void halve(bigint &a) {
@@ -235,6 +239,7 @@ void halve(bigint &a) {
     }
     number[0] = (number[0] / 2) + (carry * 5);
     a = bigint(number);
+    return;
 }
 
 
@@ -243,16 +248,14 @@ void halve(bigint &a) {
  * */
 
 bigint bigint::multiply(const bigint &that) const {
-    // Iterative addition:
-    bigint zero = 0;
     // Catch 0 multiplication.
-    if (*this == zero || that == zero) return zero;
+    if (*this == 0 || that == 0) return 0;
     // Otherwise.
     bigint result = number;
     bigint temp = that.getNumber();
-    while (--temp != zero) {
+    while (--temp != 0)
         result += *this;
-    }
+
     return result;
 }
 
@@ -266,7 +269,9 @@ bigint r_multiply(bigint &a, bigint &b) {
 bigint bigint::fast_multiply(const bigint &that) const {
     if (*this == 0 || that == 0) return 0;
     bigint a = *this, b = that;
-    return a > b ? r_multiply(a, b) : r_multiply(b, a);
+    return a > b
+           ? r_multiply(a, b)
+           : r_multiply(b, a);
 }
 
 bigint bigint::operator*(const bigint &that) const {
@@ -285,8 +290,8 @@ bigint &bigint::operator*=(const bigint &that) {
  * */
 
 bigint bigint::divide(const bigint &that) const {
+    if (that == 0) throw "Cannot divide by 0!";
     bigint result = 0, temp = *this;
-    if (that == result) throw "Cannot divide by 0!";
     while (temp >= that) {
         temp -= that;
         ++result;
@@ -310,13 +315,12 @@ bigint r_divide(bigint &a, const bigint &that) {
         result += temp;
         a -= b;
         b = that;
-    } while (temp > 1 && a != 0 && a >= b);
+    } while (a != 0 && a >= b && temp > 1);
     return result;
 }
 
 bigint bigint::fast_divide(const bigint &that) const {
-    if (*this == 0) return 0;
-    else if (that == 0) throw "Cannot Divide by 0!";
+    if (that == 0) throw "Cannot Divide by 0!";
     else if (*this < that) return 0;
 
     bigint a = *this;
@@ -353,14 +357,13 @@ bigint r_mod(bigint &a, const bigint &that) {
         result += temp;
         a -= b;
         b = that;
-    } while (temp > 1 && a != 0);
+    } while (a != 0 && a >= b && temp > 1);
     return a;
 }
 
 bigint bigint::fast_mod(const bigint &that) const {
-    if (*this == 0) return 0;
-    else if (that == 0) throw "Cannot Divide by 0!";
-    else if (*this < that) return 0;
+    if (that == 0) throw "Cannot Divide by 0!";
+    else if (*this < that) return *this;
 
     bigint a = *this;
 
@@ -368,12 +371,12 @@ bigint bigint::fast_mod(const bigint &that) const {
 }
 
 bigint bigint::operator%(const bigint &that) const {
-    bigint ret = this->mod(that);
+    bigint ret = this->fast_mod(that);
     return ret;
 }
 
 bigint &bigint::operator%=(const bigint &that) {
-    *this = this->mod(that);
+    *this = this->fast_mod(that);
     return *this;
 }
 
@@ -383,9 +386,11 @@ bigint &bigint::operator%=(const bigint &that) {
  * */
 
 bigint bigint::pow(unsigned long long n) {
-    if (n == 0) return bigint(1);
+    if (n == 0) return 1;
+
     bigint ret = *this;
     while (n-- > 1) ret *= *this;
+
     return ret;
 }
 
@@ -418,11 +423,11 @@ std::ostream &operator<<(std::ostream &os, const bigint &bigint1) {
 std::string bigint::to_string(bool commas) const {
     // Build a string representation of the bigint.
     std::string result;
-    result += (static_cast<char>(number[number.size() - 1] + '0' ));
+    result += (static_cast<char>(number[number.size() - 1] + '0'));
 
-    for (int i = number.size() - 2; i >= 0; --i) {
-        if (i % 3 == 2 && commas) result += ',';
-        result += (static_cast<char>(number[i] + '0' ));
+    for (size_t i = number.size() - 1; i > 0; --i) {
+        if (i % 3 == 0 && commas) result += ',';
+        result += (static_cast<char>(number[i-1] + '0'));
     }
 
     return result;
