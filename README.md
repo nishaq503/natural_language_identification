@@ -77,20 +77,26 @@ Given two vectors (**mathematical vectors, not C++ vectors**), the similarity be
 
 A formula for the **cosine similarity** of two vectors A and B, where both A and B have n elements, is:
 
-$\cos^2 \theta = \frac{\Big(\sum\limits_{i=0}^{n-1}{A_i B_i}\Big)^2}{\Big(\sum\limits_{i=0}^{n-1}{A_i^2}\Big) \Big(\sum\limits_{i=0}^{n-1}{B_i^2}\Big)}$
+```math
+\cos^2 \theta = \frac{\Big(\sum\limits_{i=0}^{n-1}{A_i B_i}\Big)^2}{\Big(\sum\limits_{i=0}^{n-1}{A_i^2}\Big) \Big(\sum\limits_{i=0}^{n-1}{B_i^2}\Big)}
+```
 
 This may look like a scary equation but, when we get down to it, it is actually pretty simple. Let's deconstruct it and look at its parts.
 
 Let's take a look at the numerator:
 
-$\sum\limits_{i=0}^{n-1}{A_i B_i}$
+```math
+\sum\limits_{i=0}^{n-1}{A_i B_i}
+```
 
 
 This is the **sum** of the **element-wise product** of **corresponding elements** in the vectors A and B. In math, this is known as the **dot-product** of two vectors.
 
 Let's take a look at each term in the denominator:
 
-$\sum\limits_{i=0}^{n-1}{A_i^2}$
+```math
+\sum\limits_{i=0}^{n-1}{A_i^2}
+```
 
 This is the **square-root** of the **sum** of the **element-wise square** of **each element** in the vector A. In math, this is called the **norm** of a vector. The same goes for the second term in the denominator.
 
