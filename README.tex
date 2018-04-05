@@ -226,11 +226,11 @@ frequencies is entirely up to you. You could use C-arrays, or the C\texttt{++}
 \textbf{std::vector} class, or your own class, or anything else that
 makes sense.
 
-You must name your output file \textbf{frequencies.o}.
+You must name your output file \textbf{frequencies}.
 
 \textbf{Sample command-line input:}
 
-\texttt{\$ ./frequencies.o german}
+\texttt{\$ ./frequencies german}
 
 Your program should print out the integer values of the frequencies in
 the order discussed in the section above. The integer values need to be
@@ -349,16 +349,16 @@ of the test file and the frequency vector of each training file. You
 will find the highest value for similarity and then print the name of
 the language that was the best match (followed by a new-line character).
 
-You must name your output file \textbf{language.o}.
+You must name your output file \textbf{language}.
 
 \textbf{Sample command-line input:}
 
-\texttt{\$ ./language.o english german spanish icelandic maori test}
+\texttt{\$ ./language english german spanish icelandic maori test}
 
 If \texttt{icelandic} happened to be the best match for \texttt{test},
 your command-line should end up looking like:
 
-\texttt{\$ ./language.o english german spanish icelandic maori test}\\
+\texttt{\$ ./language english german spanish icelandic maori test}\\
 \texttt{icelandic}\\
 \texttt{\$ }
 
@@ -403,7 +403,7 @@ repetitive and unnecessary things on the command line. You should learn
 to rely on \emph{wildcards}, also known as \emph{file globbing}. For
 example, if you ran:
 
-\texttt{\$ ./language.o training_languages/* testing_languages/english}
+\texttt{\$ ./language training_languages/* testing_languages/english}
 
 the command line will expand the * into \emph{all the files in the
 \textbf{training\_languages} sub-directory}, so your program will see
@@ -432,11 +432,11 @@ executables. Sometimes, the difference can be significant!
 
 You can put a stopwatch to your program with the \texttt{time} command:
 
-\texttt{\$ time ./language.o training_languages/* testing_languages/english}
+\texttt{\$ time ./language training_languages/* testing_languages/english}
 
 On my (rather fast) laptop, I can say something like this:
 
-\texttt{\$ time ./language.o training_languages/* testing_languages/english}
+\texttt{\$ time ./language training_languages/* testing_languages/english}
 \texttt{training_languages/english}
 
 

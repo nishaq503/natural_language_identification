@@ -50,12 +50,12 @@ In class, we discussed an algorithm for representing any trigram of ASCII charac
 
 Your program will receive a single command line argument that is the name of a text file. Your program should start by reading this text file. It will then calculate what the trigrams are and will store the frequency of eacy trigram in some way. How you go about storing these frequencies is entirely up to you. You could use C-arrays, or the C++ **std::vector** class, or your own class, or anything else that makes sense.
 
-You must name your output file **frequencies.o**.
+You must name your output file **frequencies**.
 
 **Sample command-line input:**
 
 ```bash
-$ ./frequencies.o german
+$ ./frequencies german
 ```
 
 Your program should print out the integer values of the frequencies in the order discussed in the section above. The integer values need to be **space-separated** and there needs to be a **new-line character** after the frequency of the very last trigram.
@@ -77,26 +77,25 @@ Given two vectors (**mathematical vectors, not C++ vectors**), the similarity be
 
 A formula for the **cosine similarity** of two vectors A and B, where both A and B have n elements, is:
 
-```math
+$$
 \cos^2 \theta = \frac{\Big(\sum\limits_{i=0}^{n-1}{A_i B_i}\Big)^2}{\Big(\sum\limits_{i=0}^{n-1}{A_i^2}\Big) \Big(\sum\limits_{i=0}^{n-1}{B_i^2}\Big)}
-```
+$$
 
 This may look like a scary equation but, when we get down to it, it is actually pretty simple. Let's deconstruct it and look at its parts.
 
 Let's take a look at the numerator:
 
-```math
+$$
 \sum\limits_{i=0}^{n-1}{A_i B_i}
-```
-
+$$
 
 This is the **sum** of the **element-wise product** of **corresponding elements** in the vectors A and B. In math, this is known as the **dot-product** of two vectors.
 
 Let's take a look at each term in the denominator:
 
-```math
+$$
 \sum\limits_{i=0}^{n-1}{A_i^2}
-```
+$$
 
 This is the **square-root** of the **sum** of the **element-wise square** of **each element** in the vector A. In math, this is called the **norm** of a vector. The same goes for the second term in the denominator.
 
@@ -107,6 +106,7 @@ The value for cosine similarity will range between 0 and 1 inclusive. The larger
 As it so often happens, there are some pitfalls when calculating the similarity between vectors using built-in C++ integer types. The frequency vectors will have some values that are quite large and when these values are squared, they **overlow** even unsigned long long. Naturally, we are going to have you use **bigints** to get around this issue. You will store the intermediate parts of the similarity calculation as bigints and then use bigint methods to calculate $cos^2 \theta$.
 
 Another thing to notice is that similarity is going to be of type `double`. We have not implemented bigints that can handle floating-point types. We will get around this problem by using a little math trick called **scaled-division**. The idea is that you:
+
 * take the numerator and multiply it by some convenient number (e.g. $1,000,000$),
 * perform bigint division using the **scaled numerator**,
 * convert the result into a regular integer,
@@ -116,24 +116,24 @@ to get the actual value for $cos^2 \theta$. You can then calculate the square-ro
 
 Note that you will be performing multiplications and divisions with some really large numbers. The iterative bigint `multiply` and `divide` methods you implemented are going to be painfully slow for numbers of this magnitude. We suggest that you download the solution key for bigint provided to you and use the `fast_multiply` and `fast_divide` methods implemented by a certain wonderful TA.
 
-#### Milestone Requirements:
+#### Milestone Requirements
 
 Your program will receive an unknown (greater than 2) number of command-line arguments. These will be the names of the training files and finally the name of the test file. You are to calculate the **trigram frequency vector** for each of the files given. You will then compute the **cosine similarity** between the frequency vector of the test file and the frequency vector of each training file. You will find the highest value for similarity and then print the name of the language that was the best match (followed by a new-line character).
 
-You must name your output file **language.o**.
+You must name your output file **language**.
 
 **Sample command-line input:**
 
 ```bash
-$ ./language.o english german spanish icelandic maori test
+$ ./language english german spanish icelandic maori test
 ```
 
 If `icelandic` happened to be the best match for `test`, your command-line should end up looking like:
 
 ```bash
-$ ./language.o english german spanish icelandic maori test
+$ ./language english german spanish icelandic maori test
 icelandic
-$ 
+$
 ```
 
 #### Grading Rubric
@@ -160,7 +160,7 @@ You will notice that inside the resulting directory are two sub-directories call
 If you are anything like some of your instructors, you hate typing repetitive and unnecessary things on the command line. You should learn to rely on *wildcards*, also known as *file globbing*. For example, if you ran:
 
 ```bash
-$ ./language.o training_languages/* testing_languages/english
+$ ./language training_languages/* testing_languages/english
 ```
 
 the command line will expand the * into *all the files in the **training_languages** sub-directory*, so your program will see every file individually just as if you had painstakingly typed out the name of every file individually!
@@ -174,13 +174,13 @@ Note that ease-of-debugging and speed-of-execution are at odds with one another.
 You can put a stopwatch to your program with the `time` command:
 
 ```bash
-$ time ./language.o training_languages/* testing_languages/english
+$ time ./language training_languages/* testing_languages/english
 ```
 
 On my (rather fast) laptop, I can say something like this:
 
 ```bash
-$ time ./language.o training_languages/* testing_languages/english
+$ time ./language training_languages/* testing_languages/english
 training_languages/english
 
 real    0m2.610s
