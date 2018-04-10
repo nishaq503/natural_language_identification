@@ -74,21 +74,30 @@ public:
     bigint &operator--(); // Prefix decrement i.e. --i
     bigint operator--(int); // Postfix decrement i.e. i--
 
+    // base-10 shifting helpers
+    void shift_up(vec_bin n = 1);
+    vec_bin shift_down();
+    bigint mult_digit(vec_bin d) const;
+    bigint r_multiply_10(bigint &that);
+
     // Multiplication
     bigint multiply(const bigint &that) const; // returns a new bigint that is the product the two bigints *this and that
     bigint fast_multiply(const bigint &that) const; // divides in O(nlogn) time.
+    bigint fast_mult_10(const bigint &that) const;
     bigint operator*(const bigint &that) const; // returns a new bigint that is the product the two bigints *this and that
     bigint &operator*=(const bigint &that); // multiplys bigint *this and bigint that, and overwrites *this
 
     //  Division
     bigint divide(const bigint &that) const; // returns a new bigint that is the quotient from the division of bigint *this by bigint that
     bigint fast_divide(const bigint &that) const; // multiplies in O(nlogn) time.
+    bigint fast_div_10(const bigint &that) const;
     bigint operator/(const bigint &that) const; // returns a new bigint that is the quotient from the division of bigint *this by bigint that
     bigint &operator/=(const bigint &that); // gets the quotient from the division of bigint *this by bigint that, and overwrites *this
 
     // Modulo
     bigint mod(const bigint &that) const; // returns a new bigint that is the remainder from the division of bigint *this by bigint that
     bigint fast_mod(const bigint &that) const; // You get the idea.
+    bigint fast_mod_10(const bigint &that) const;
     bigint operator%(const bigint &that) const; // returns a new bigint that is the remainder from the division of bigint *this by bigint that
     bigint &operator%=(const bigint &that); // gets the remainder from the division of bigint *this by bigint that, and overwrites *this
 

@@ -242,6 +242,36 @@ void halve(bigint &a) {
     return;
 }
 
+/**
+ * base-10 shifting for fast multiply
+ **/
+
+void bigint::shift_up(vec_bin n) {
+    std::vector<vec_bin> result(n,0);
+    for (size_t i = 0; i < number.size(); ++i)
+        result.push_back(number[i]);
+
+    number = result;
+}
+
+vec_bin bigint::shift_down() {
+    vec_bin result = number.front();
+    number.erase(number.begin());
+    return result;
+}
+
+bigint bigint::mult_digit(vec_bin d) const {
+    vec_bin carry = 0, temp;
+    std::vector<vec_bin> result;
+    for (size_t i = 0; i < number.size(); ++i) {
+        temp = (number[i] * d) + carry;
+        result.push_back(temp % 10);
+        carry = temp / 10;
+    }
+    if (carry) result.push_back(carry);
+    return result;
+}
+
 
 /** Multiplication
  *
@@ -274,16 +304,31 @@ bigint bigint::fast_multiply(const bigint &that) const {
            : r_multiply(b, a);
 }
 
+bigint bigint::r_multiply_10(bigint &that) {
+    if (that.number.size() == 1) return this->mult_digit(that[0]);
+    vec_bin d = that.shift_down();
+    bigint temp = d ? this->mult_digit(d) : 0;
+    this->shift_up();
+    return temp + this->r_multiply_10(that);
+}
+
+bigint bigint::fast_mult_10(const bigint &that) const {
+    if (*this == 0 || that == 0) return 0;
+    bigint a = *this, b = that;
+    return a > b
+           ? a.r_multiply_10(b)
+           : b.r_multiply_10(a);
+}
+
 bigint bigint::operator*(const bigint &that) const {
-    bigint ret = this->fast_multiply(that);
+    bigint ret = this->fast_mult_10(that);
     return ret;
 }
 
 bigint &bigint::operator*=(const bigint &that) {
-    *this = this->fast_multiply(that);
+    *this = this->fast_mult_10(that);
     return *this;
 }
-
 
 /** Division
  *
@@ -328,13 +373,45 @@ bigint bigint::fast_divide(const bigint &that) const {
     return r_divide(a, that);
 }
 
+bigint r_div_10(bigint &a, const bigint &that) {
+    bigint result, b;
+    vec_bin n = 0;
+    do {
+        vec_bin k = 0;
+        b = that;
+        n = a.getNumber().size() - b.getNumber().size();
+        b.shift_up(n);
+        if (a < b) {
+            b.shift_down();
+            --n;
+        }
+        while (a >= b) {
+            a -= b;
+            ++k;
+        }
+        bigint temp = k;
+        temp.shift_up(n);
+        result += temp;
+    } while (n && a >= that);
+    return result;
+}
+
+bigint bigint::fast_div_10(const bigint &that) const {
+    if (that == 0) throw "Cannot Divide by 0!";
+    else if (*this < that) return 0;
+
+    bigint a = *this;
+
+    return r_div_10(a, that);
+}
+
 bigint bigint::operator/(const bigint &that) const {
-    bigint ret = this->fast_divide(that);
+    bigint ret = this->fast_div_10(that);
     return ret;
 }
 
 bigint &bigint::operator/=(const bigint &that) {
-    *this = this->fast_divide(that);
+    *this = this->fast_div_10(that);
     return *this;
 }
 
@@ -351,10 +428,9 @@ bigint bigint::mod(const bigint &that) const {
 }
 
 bigint r_mod(bigint &a, const bigint &that) {
-    bigint temp = 1, b = that, result;
+    bigint temp = 1, b = that;
     do {
         temp = r_divide_helper(a, b);
-        result += temp;
         a -= b;
         b = that;
     } while (a != 0 && a >= b && temp > 1);
@@ -370,13 +446,41 @@ bigint bigint::fast_mod(const bigint &that) const {
     return r_mod(a, that);
 }
 
+bigint r_mod_10(bigint &a, const bigint &that) {
+    vec_bin n = 0;
+    do {
+        bigint b = that;
+        vec_bin k = 0;
+        n = a.getNumber().size() - b.getNumber().size();
+        b.shift_up(n);
+        if (a < b) {
+            b.shift_down();
+            --n;
+        }
+        while (a >= b) {
+            a -= b;
+            ++k;
+        }
+    } while (n && a >= that);
+    return a;
+}
+
+bigint bigint::fast_mod_10(const bigint &that) const {
+    if (that == 0) throw "Cannot Divide by 0!";
+    else if (*this < that) return 0;
+
+    bigint a = *this;
+
+    return r_mod_10(a, that);
+}
+
 bigint bigint::operator%(const bigint &that) const {
-    bigint ret = this->fast_mod(that);
+    bigint ret = this->fast_mod_10(that);
     return ret;
 }
 
 bigint &bigint::operator%=(const bigint &that) {
-    *this = this->fast_mod(that);
+    *this = this->fast_mod_10(that);
     return *this;
 }
 

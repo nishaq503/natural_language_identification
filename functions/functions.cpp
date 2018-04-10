@@ -26,13 +26,11 @@ std::vector<unsigned int> get_frequency_vector(const std::string file_name) {
     std::vector <unsigned int> frequency(26*26*26, 0);
     char c;
     unsigned int i1, i2, i3;
-    
+
     std::ifstream infile(file_name);
 
-    if (!(read_next_char(infile, c, i1) && read_next_char(infile, c, i2) && read_next_char(infile, c, i3))) {
-        std::cerr << "Not enougn characters in " << file_name << std::endl;
-        exit(EXIT_FAILURE);
-    }
+    if (!(read_next_char(infile, c, i1) && read_next_char(infile, c, i2) && read_next_char(infile, c, i3))) 
+        throw ("Not enougn characters in " + file_name);
 
     do {
         ++frequency[26*26*i1 + 26*i2 + i3];
